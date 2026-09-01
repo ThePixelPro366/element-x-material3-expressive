@@ -1,0 +1,62 @@
+name: Build Unsigned APK
+
+# Builds an unsigned (debug-signed only) F-Droid-flavour APK for the Material 3
+# Expressive fork. The F-Droid flavour is used because it pulls in no Google /
+# Firebase dependencies and therefore needs no signing keys or API-key secrets.
+# The resulting APK is uploaded as a workflow artifact.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions: {}
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx5g -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC -Dkotlin.daemon.jvm.options=-Xmx3g
+  GRADLE_ARGS: --stacktrace --no-configuration-cache
+
+jobs:
+  build:
+    name: Build F-Droid debug APK (unsigned)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Assemble F-Droid debug APK
+        run: ./gradlew :app:assembleFdroidDebug $GRADLE_ARGS
+
+      - name: List built APKs
+        if: always()
+        run: find app/build/outputs/apk -name '*.apk' -print || true
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: elementx-m3expressive-fdroid-debug
+          path: app/build/outputs/apk/fdroid/debug/*.apk
+          if-no-files-found: error
