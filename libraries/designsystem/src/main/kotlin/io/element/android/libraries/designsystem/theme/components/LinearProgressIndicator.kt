@@ -10,6 +10,8 @@ package io.element.android.libraries.designsystem.theme.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,6 +44,7 @@ fun LinearProgressIndicator(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LinearProgressIndicator(
     modifier: Modifier = Modifier,
@@ -62,12 +65,11 @@ fun LinearProgressIndicator(
             drawStopIndicator = {},
         )
     } else {
-        androidx.compose.material3.LinearProgressIndicator(
+        // Material 3 Expressive: use the wavy indeterminate linear indicator.
+        LinearWavyProgressIndicator(
             modifier = modifier,
             color = color,
-            gapSize = gapSize,
             trackColor = trackColor,
-            strokeCap = strokeCap,
         )
     }
 }

@@ -11,6 +11,8 @@ package io.element.android.libraries.designsystem.theme.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,6 +42,7 @@ fun CircularProgressIndicator(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CircularProgressIndicator(
     modifier: Modifier = Modifier,
@@ -57,11 +60,10 @@ fun CircularProgressIndicator(
             strokeWidth = strokeWidth,
         )
     } else {
-        androidx.compose.material3.CircularProgressIndicator(
+        // Material 3 Expressive: use the new morphing LoadingIndicator for indeterminate loading.
+        LoadingIndicator(
             modifier = modifier,
             color = color,
-            trackColor = trackColor,
-            strokeWidth = strokeWidth,
         )
     }
 }

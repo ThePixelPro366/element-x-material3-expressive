@@ -27,6 +27,7 @@ import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalRippleThemeConfiguration
 import androidx.compose.material3.RippleThemeConfiguration
@@ -129,6 +130,7 @@ fun InvisibleButton(
     Spacer(modifier = modifier.height(size.toMinHeight()))
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ButtonInternal(
     text: String,
@@ -185,6 +187,8 @@ private fun ButtonInternal(
 
     // Apply the same shape to all buttons, so that the focus ring is consistent across styles.
     val shape = RoundedCornerShape(percent = 50)
+    // Material 3 Expressive: morph the pill into a squarer shape while the button is pressed.
+    val pressedShape = RoundedCornerShape(percent = 28)
 
     val border = when (style) {
         ButtonStyle.Filled -> null
@@ -226,7 +230,7 @@ private fun ButtonInternal(
             },
             modifier = modifier.heightIn(min = minHeight),
             enabled = enabled,
-            shape = shape,
+            shapes = ButtonDefaults.shapes(shape = shape, pressedShape = pressedShape),
             colors = colors,
             elevation = null,
             border = border,
