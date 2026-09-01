@@ -1,0 +1,6 @@
+# Normalize line endings for text files.
+* text=auto
+
+# NOTE: The upstream Element X repo stored UI-test screenshots/snapshots in Git LFS.
+# This private fork drops those binary test baselines (they are not needed to build
+# the APK) and does not use Git LFS.
