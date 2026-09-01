@@ -114,7 +114,10 @@ fun ElementTheme(
     content: @Composable () -> Unit,
 ) {
     val darkTheme = theme.isDark()
-    val currentCompoundColor = when {
+    val useDynamic = dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val context = LocalContext.current
+
+    val baseCompoundColor = when {
         darkTheme -> if (theme == Theme.Black) {
             compoundDark.copy(
                 bgCanvasDefault = Color.Black,
@@ -127,20 +130,25 @@ fun ElementTheme(
     }
 
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+        useDynamic -> if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         darkTheme -> if (theme == Theme.Black) {
-            currentCompoundColor.toMaterialColorScheme()
+            baseCompoundColor.toMaterialColorScheme()
         } else {
             materialColorsDark
         }
         else -> materialColorsLight
     }
 
-    val statusBarColorScheme = if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val context = LocalContext.current
+    // Material 3 Expressive: when Material You is enabled, recolor the entire Compound
+    // palette (backgrounds, surfaces, text, icons, borders, accents) from the
+    // wallpaper-derived color scheme so the whole UI follows the system colors.
+    val currentCompoundColor = if (useDynamic) {
+        baseCompoundColor.withDynamicColorScheme(colorScheme)
+    } else {
+        baseCompoundColor
+    }
+
+    val statusBarColorScheme = if (useDynamic) {
         if (lightStatusBar) {
             dynamicDarkColorScheme(context)
         } else {

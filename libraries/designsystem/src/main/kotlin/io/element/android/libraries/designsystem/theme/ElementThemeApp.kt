@@ -81,6 +81,9 @@ fun ElementThemeApp(
     ) {
         ElementTheme(
             theme = theme,
+            // Material 3 Expressive: derive the whole palette from the system wallpaper
+            // (Material You) on Android 12+.
+            dynamicColor = true,
             content = content,
             compoundLight = compoundLight,
             compoundDark = compoundDark,
