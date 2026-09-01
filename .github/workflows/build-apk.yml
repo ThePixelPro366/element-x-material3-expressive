@@ -15,10 +15,11 @@ permissions:
   contents: read
 
 env:
-  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx5g -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC -Dkotlin.daemon.jvm.options=-Xmx3g
-  # --no-parallel and a low worker count flatten the peak memory usage so the
-  # Gradle daemon is not OOM-killed while packaging this very large project.
-  GRADLE_ARGS: --stacktrace --no-configuration-cache --no-parallel --max-workers=2
+  # Same JVM settings the upstream Element X APK build uses on ubuntu-latest; the
+  # 8g daemon heap is needed for the D8 dex-merge phase (a smaller heap OOM-kills it).
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx8g -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC -Dkotlin.daemon.jvm.options=-Xmx4g
+  # Cap workers to keep the number of concurrent JVMs (and thus peak RAM) in check.
+  GRADLE_ARGS: --stacktrace --no-configuration-cache --max-workers=3
 
 jobs:
   build:
